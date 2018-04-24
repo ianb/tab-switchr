@@ -1,0 +1,146 @@
+/* Home page styles */
+
+body,
+html {
+  font: message-box;
+  overflow: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  border-radius: 3px;
+  margin: 0;
+  min-height: 200px;
+  overflow: hidden;
+}
+
+#panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+  padding: 6px 0 0;
+}
+
+#panel,
+.tabs-section__title,
+.tab {
+  font: menu;
+}
+
+.separator {
+  background: hsla(210, 4%, 10%, 0.14);
+  height: 1px;
+  margin: 6px 0;
+}
+
+.tabs-wrapper {
+  flex: 1;
+  max-height: 600px;
+  overflow: auto;
+  padding-bottom: 6px;
+}
+
+.tabs-section__title {
+  align-items: center;
+  color: GrayText;
+  display: flex;
+  font-weight: normal;
+  height: 24px;
+  margin: 0;
+  padding: 4px 12px;
+}
+
+.tabs-section__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#open-tabs-list {
+  max-height: 340px;
+  overflow: scroll;
+}
+
+.tab {
+  align-items: center;
+  display: flex;
+  font-weight: normal;
+  height: 26.5px;
+  padding: 4px 12px;
+  padding-inline-start: 18px;
+}
+
+.tab:hover,
+.tab:focus {
+  background: rgba(204, 204, 204, 0.3);
+}
+
+.tab__image,
+.tab__text {
+  pointer-events: none;
+}
+
+.tab__image {
+  background-size: 16px 16px;
+  flex: 0 0 16px;
+  height: 16px;
+  margin-inline-end: 8px;
+}
+
+/* this is a hack if, for any reason, a site does not
+supply a favicon */
+
+.tab__image[style*=undefined] {
+  background-image: url(images/globe.svg) !important;
+}
+
+.tab__text {
+  margin-top: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.panel-footer {
+  border-top: 1px solid hsla(210, 4%, 10%, 0.14);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 41px;
+  margin-bottom: 0;
+}
+
+.panel-footer.toggle-disabled {
+  grid-template-columns: 1fr;
+}
+
+.mobile-toggle {
+  border: 0;
+  border-inline-end: 1px solid hsla(210, 4%, 10%, 0.14);
+}
+
+.feedback-button,
+.mobile-toggle {
+  align-items: center;
+  background: hsla(0, 0%, 80%, 0.3);
+  color: rgb(26, 26, 26);
+  cursor: default;
+  display: flex;
+  font: menu;
+  justify-content: center;
+  margin-bottom: 0;
+  padding: 12px 4px;
+  text-decoration: none;
+}
+
+.toggle-disabled .mobile-toggle {
+  display: none;
+}
+
+.feedback-button:hover,
+.mobile-toggle:hover {
+  background: hsla(0, 0%, 80%, 0.4);
+}

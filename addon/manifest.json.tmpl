@@ -1,0 +1,36 @@
+{
+  "manifest_version": 2,
+  "name": "Tab Switchr",
+  "version": "{{version}}",
+  "description": "{{description}}",
+  "icons": {
+    "48": "side-view.png",
+    "96": "side-view.png"
+  },
+  "author": "{{{author}}}",
+  "homepage_url": "{{{homepage}}}",
+  "applications": {
+    "gecko": {
+      "id": "tab-switchr@mozilla.org",
+      "strict_min_version": "57.0a1"
+    }
+  },
+  "background": {
+    "scripts": [
+      "build/buildSettings.js",
+      "background.js"
+    ]
+  },
+  "browser_action": {
+    "default_icon": "generic-fox.png",
+    "default_popup": "popup.html",
+    "default_title": "Open Tab Switchr"
+  },
+  "web_accessible_resources": [
+  ],
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "<all_urls>"
+  ]
+}
