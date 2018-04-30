@@ -38,7 +38,6 @@ body {
 }
 
 .tabs-wrapper {
-  flex: 1;
   max-height: 600px;
   overflow: auto;
   padding-bottom: 6px;
@@ -81,6 +80,7 @@ body {
 
 .tab__image,
 .tab__text {
+  flex: 1;
   pointer-events: none;
 }
 
@@ -89,6 +89,21 @@ body {
   flex: 0 0 16px;
   height: 16px;
   margin-inline-end: 8px;
+}
+
+.tab__close {
+  cursor: pointer;
+  float: right;
+  color: #666;
+  padding: 0 20px;
+}
+
+.tab__close:hover {
+  color: #000;
+}
+
+.tab__active .tab {
+  font-weight: bold;
 }
 
 /* this is a hack if, for any reason, a site does not

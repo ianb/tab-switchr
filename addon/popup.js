@@ -1,5 +1,6 @@
 let recentTabIds = [];
 const rerenderEvents = ["onUpdated", "onRemoved", "onCreated", "onMoved", "onDetached", "onAttached"];
+let activeTabElement;
 
 async function updateHome(event) {
   if (event) {
@@ -19,20 +20,24 @@ async function updateHome(event) {
       }
     }
   }
-  renderTabList(tabs, "#open-tabs-list", "existing-tab");
-  renderTabList(recentTabs, "#recent-tabs-list", "recent-tab");
+  renderTabList(tabs, "#open-tabs-list", "existing-tab", {captureActive: true, restoreScroll: true});
+  renderTabList(recentTabs, "#recent-tabs-list", "recent-tab", {captureActive: false});
 }
 
 let renderTabListLastRendered = {};
 
-function renderTabList(tabs, containerSelector, eventLabel) {
+function renderTabList(tabs, containerSelector, eventLabel, options) {
   let renderedInfo = "";
+  let newActiveTabElement;
   const tabList = element(containerSelector);
   const newTabList = tabList.cloneNode();
   tabs.forEach((tab, index) => {
     let li = document.createElement("li");
+    let closer = document.createElement("span");
     let image = document.createElement("span");
     let text = document.createElement("span");
+    closer.classList.add("tab__close");
+    closer.textContent = "✖";
     image.classList.add("tab__image");
     text.classList.add("tab__text");
     let title = tab.title;
@@ -42,6 +47,11 @@ function renderTabList(tabs, containerSelector, eventLabel) {
     if ("favIconUrl" in tab && tab.favIconUrl) {
       favIconUrl = tab.favIconUrl;
       image.style.backgroundImage = `url(${favIconUrl})`;
+    }
+    if (tab.active) {
+      newActiveTabElement = li;
+      li.classList.add("tab__active");
+      renderedInfo += "ACTIVE\n";
     }
     renderedInfo += favIconUrl + " ";
     let anchor = document.createElement("a");
@@ -53,19 +63,36 @@ function renderTabList(tabs, containerSelector, eventLabel) {
     anchor.addEventListener("click", (event) => {
       focusTab(tabId);
     });
+    closer.addEventListener("click", (event) => {
+      closeTab(tabId);
+      event.stopPropagation();
+    });
     anchor.prepend(image);
     anchor.appendChild(text);
+    anchor.appendChild(closer);
     li.appendChild(anchor);
     newTabList.appendChild(li);
   });
   if (renderedInfo !== renderTabListLastRendered[containerSelector]) {
+    let oldScroll = tabList.scrollTop;
     tabList.replaceWith(newTabList);
     renderTabListLastRendered[containerSelector] = renderedInfo;
+    if (options.captureActive) {
+      activeTabElement = newActiveTabElement;
+    }
+    if (options.restoreScroll) {
+      newTabList.scrollTop = oldScroll;
+    }
   }
 }
 
 function focusTab(tabId) {
   browser.tabs.update(tabId, {active: true});
+}
+
+async function closeTab(tabId) {
+  await browser.tabs.remove(tabId);
+  updateHome({});
 }
 
 function element(selector) {
@@ -96,7 +123,10 @@ async function init() {
   recentTabIds = await browser.runtime.sendMessage({
     type: "getRecent"
   });
-  updateHome();
+  await updateHome();
+  if (activeTabElement) {
+    activeTabElement.scrollIntoView();
+  }
 }
 
 init();
