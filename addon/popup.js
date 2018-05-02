@@ -158,7 +158,7 @@ element(".feedback-button").addEventListener("click", () => {
   });*/
 });
 
-element("#tab-switchr-search").addEventListener("keydown", (event) => {
+element("#tab-switchr-search").addEventListener("keydown", async (event) => {
   if (event.code === "Enter") {
     if (selectedTabId) {
       focusTab(selectedTabId);
@@ -179,9 +179,9 @@ element("#tab-switchr-search").addEventListener("keydown", (event) => {
   }
   event.stopPropagation();
   event.preventDefault();
-  updateHome();
+  await updateHome();
   if (selectedTabElement) {
-    selectedTabElement.scrollIntoView();
+    selectedTabElement.scrollIntoView({block: "nearest"});
   }
 });
 
