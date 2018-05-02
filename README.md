@@ -17,4 +17,4 @@ You could also run `npm run build` and then go to `about:debugging` and **Load T
 
 ## Keyboard shortcut
 
-Use **Alt + Shift + T** to open the popup.
+Use **Ctrl + Shift + T** to open the popup on Mac, and **Alt + Shift +T** on Windows and Linux.
