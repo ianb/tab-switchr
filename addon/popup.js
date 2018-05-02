@@ -99,6 +99,15 @@ function renderTabList(tabs, containerSelector, eventLabel, options) {
     renderedInfo += url + " ";
     anchor.classList.add("tab");
     anchor.setAttribute("tabIndex", "0");
+    if (tab.pinned) {
+      title = "📌 " + title;
+    }
+    if (tab.discarded) {
+      title += " 💤";
+    }
+    if (tab.audible) {
+      title = "🔊 " + title;
+    }
     text.textContent = title;
     renderedInfo += title + "\n";
     anchor.addEventListener("click", (event) => {
