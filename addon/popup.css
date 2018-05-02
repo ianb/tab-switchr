@@ -164,7 +164,7 @@ supply a favicon */
   background: hsla(0, 0%, 80%, 0.4);
 }
 
-#search {
+#tab-switchr-search {
   width: calc(100% - 10px);
   margin: 0 5px;
 }

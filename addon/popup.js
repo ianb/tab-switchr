@@ -158,7 +158,7 @@ element(".feedback-button").addEventListener("click", () => {
   });*/
 });
 
-element("#search").addEventListener("keyup", (event) => {
+element("#tab-switchr-search").addEventListener("keyup", (event) => {
   console.log("got key with code", event.code);
   if (event.code === "Enter") {
     if (selectedTabId) {
