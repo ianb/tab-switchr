@@ -4,8 +4,7 @@
   "version": "{{version}}",
   "description": "{{description}}",
   "icons": {
-    "48": "generic-fox.png",
-    "96": "generic-fox.png"
+    "256": "generic-fox.png"
   },
   "author": "{{{author}}}",
   "homepage_url": "{{{homepage}}}",
@@ -25,6 +24,14 @@
     "default_icon": "generic-fox.png",
     "default_popup": "popup.html",
     "default_title": "Open Tab Switchr"
+  },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+T"
+      },
+      "description": "Opens the Tab Switchr popup"
+    }
   },
   "web_accessible_resources": [
   ],

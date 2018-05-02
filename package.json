@@ -35,7 +35,7 @@
     "build": "mkdir -p addon/build && npm-run-all build:*",
     "build:manifest": "node -e 'let input = JSON.parse(fs.readFileSync(\"package.json\")); input.version = input.version.slice(0, -1) + Math.floor((Date.now() - new Date(new Date().getFullYear().toString()).getTime()) / 3600000); console.log(JSON.stringify(input))' | mustache - addon/manifest.json.tmpl > addon/manifest.json",
     "build:buildSettings": "node -e 'console.log(JSON.stringify(process.env))' | mustache - addon/buildSettings.js.tmpl > addon/build/buildSettings.js",
-    "build:web-ext": "web-ext build --source-dir=addon --overwrite-dest --ignore-files '*.tmpl'",
+    "build:web-ext": "web-ext build --source-dir=addon --overwrite-dest --ignore-files '*.tmpl' && mv web-ext-artifacts/*.zip addon.xpi",
     "package": "npm run build",
     "run": "mkdir -p ./Profile && web-ext run --source-dir=addon -p ./Profile --browser-console --keep-profile-changes -f ${FIREFOX:-nightly}",
     "test": "npm run lint"

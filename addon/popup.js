@@ -1,6 +1,12 @@
 let recentTabIds = [];
 const rerenderEvents = ["onUpdated", "onRemoved", "onCreated", "onMoved", "onDetached", "onAttached"];
 let activeTabElement;
+let selectedTabElement;
+let searchFilter;
+let selectedTabId;
+let selectedIsRecent;
+let renderedRecentTabIds = [];
+let renderedTabIds = [];
 
 async function updateHome(event) {
   if (event) {
@@ -16,8 +22,37 @@ async function updateHome(event) {
   for (let tabId of recentTabIds) {
     for (let tab of tabs) {
       if (tab.id === tabId) {
-        recentTabs.push(tab);
+        recentTabs.push(Object.assign({}, tab));
       }
+    }
+  }
+  if (searchFilter) {
+    recentTabs = recentTabs.filter(t => matchesSearch(t, searchFilter));
+    tabs = tabs.filter(t => matchesSearch(t, searchFilter));
+  }
+  renderedRecentTabIds = recentTabs.map(t => t.id);
+  renderedTabIds = tabs.map(t => t.id);
+  if (selectedTabId) {
+    if (selectedIsRecent) {
+      for (let tab of recentTabs) {
+        if (tab.id === selectedTabId) {
+          tab.selected = true;
+          break;
+        }
+      }
+    } else {
+      for (let tab of tabs) {
+        if (tab.id === selectedTabId) {
+          tab.selected = true;
+          break;
+        }
+      }
+    }
+  } else {
+    if (recentTabs.length) {
+      recentTabs[0].selected = true;
+      selectedTabId = recentTabs[0].id;
+      selectedIsRecent = true;
     }
   }
   renderTabList(tabs, "#open-tabs-list", "existing-tab", {captureActive: true, restoreScroll: true});
@@ -29,6 +64,7 @@ let renderTabListLastRendered = {};
 function renderTabList(tabs, containerSelector, eventLabel, options) {
   let renderedInfo = "";
   let newActiveTabElement;
+  let newSelectedTabElement;
   const tabList = element(containerSelector);
   const newTabList = tabList.cloneNode();
   tabs.forEach((tab, index) => {
@@ -52,6 +88,11 @@ function renderTabList(tabs, containerSelector, eventLabel, options) {
       newActiveTabElement = li;
       li.classList.add("tab__active");
       renderedInfo += "ACTIVE\n";
+    }
+    if (tab.selected) {
+      newSelectedTabElement = li;
+      li.classList.add("tab__selected");
+      renderedInfo += "SELECTED\n";
     }
     renderedInfo += favIconUrl + " ";
     let anchor = document.createElement("a");
@@ -79,11 +120,20 @@ function renderTabList(tabs, containerSelector, eventLabel, options) {
     renderTabListLastRendered[containerSelector] = renderedInfo;
     if (options.captureActive) {
       activeTabElement = newActiveTabElement;
+      selectedTabElement = newSelectedTabElement;
     }
     if (options.restoreScroll) {
       newTabList.scrollTop = oldScroll;
     }
   }
+}
+
+function matchesSearch(tab, term) {
+  let params = `${tab.url} ${tab.title}`;
+  if (term.toLowerCase() === term) {
+    params = `${tab.url.toLowerCase()} ${tab.title.toLowerCase()}`;
+  }
+  return params.includes(term);
 }
 
 function focusTab(tabId) {
@@ -107,6 +157,82 @@ element(".feedback-button").addEventListener("click", () => {
     forUrl: lastDisplayedUrl,
   });*/
 });
+
+element("#search").addEventListener("keyup", (event) => {
+  console.log("got key with code", event.code);
+  if (event.code === "Enter") {
+    if (selectedTabId) {
+      focusTab(selectedTabId);
+      window.close();
+    }
+  } else if (event.code === "ArrowUp") {
+    movePosition(-1);
+  } else if (event.code === "ArrowDown") {
+    movePosition(1);
+  } else {
+    searchFilter = event.target.value;
+    updateHome();
+    return;
+  }
+  event.stopPropagation();
+  event.preventDefault();
+  updateHome();
+  if (selectedTabElement) {
+    selectedTabElement.scrollIntoView();
+  }
+});
+
+function movePosition(dir) {
+  if (!selectedTabId
+    || (selectedIsRecent && renderedRecentTabIds.indexOf(selectedTabId) === -1)
+    || (!selectedIsRecent && renderedTabIds.indexOf(selectedTabId) === -1)) {
+    if (renderedRecentTabIds.length) {
+      selectedTabId = renderedRecentTabIds[0];
+      selectedIsRecent = true;
+    } else {
+      selectedTabId = renderedTabIds[0];
+      selectedIsRecent = false;
+    }
+    return;
+  }
+  if (selectedIsRecent) {
+    let pos = renderedRecentTabIds.indexOf(selectedTabId);
+    let length = renderedRecentTabIds.length;
+    if (dir === 1) {
+      if (pos === length - 1) {
+        selectedIsRecent = false;
+        selectedTabId = renderedTabIds[0];
+      } else {
+        selectedTabId = renderedRecentTabIds[pos + 1];
+      }
+    } else {
+      if (pos === 0) {
+        selectedIsRecent = false;
+        selectedTabId = renderedTabIds[renderedTabIds.length - 1];
+      } else {
+        selectedTabId = renderedRecentTabIds[pos - 1];
+      }
+    }
+  } else {
+    let pos = renderedTabIds.indexOf(selectedTabId);
+    let length = renderedTabIds.length;
+    if (dir === 1) {
+      if (pos === length - 1) {
+        selectedIsRecent = true;
+        selectedTabId = renderedRecentTabIds[0];
+      } else {
+        selectedTabId = renderedTabIds[pos + 1];
+      }
+    } else {
+      if (pos === 0) {
+        selectedIsRecent = true;
+        selectedTabId = renderedRecentTabIds[renderedRecentTabIds.length - 1];
+      } else {
+        selectedTabId = renderedTabIds[pos - 1];
+      }
+    }
+  }
+}
 
 async function init() {
   browser.runtime.onMessage.addListener((message) => {

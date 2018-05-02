@@ -106,6 +106,10 @@ body {
   font-weight: bold;
 }
 
+.tab__selected {
+  background-color: #999;
+}
+
 /* this is a hack if, for any reason, a site does not
 supply a favicon */
 
@@ -158,4 +162,9 @@ supply a favicon */
 .feedback-button:hover,
 .mobile-toggle:hover {
   background: hsla(0, 0%, 80%, 0.4);
+}
+
+#search {
+  width: calc(100% - 10px);
+  margin: 0 5px;
 }
