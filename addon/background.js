@@ -40,7 +40,7 @@ async function addRecentTabId(tabId) {
       recentTabIds
     });
   } catch (error) {
-    if (String(error).includes("Could not establish connection")) {
+    if (String(error.message || error).includes("Could not establish connection")) {
       // We're just speculatively sending messages to the popup, it might not be open,
       // and that is fine
     } else {

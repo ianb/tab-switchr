@@ -36,21 +36,21 @@ async function updateHome(event) {
     if (selectedIsRecent) {
       for (let tab of recentTabs) {
         if (tab.id === selectedTabId) {
-          tab.selected = true;
+          tab.switchSelected = true;
           break;
         }
       }
     } else {
       for (let tab of tabs) {
         if (tab.id === selectedTabId) {
-          tab.selected = true;
+          tab.switchSelected = true;
           break;
         }
       }
     }
   } else {
     if (recentTabs.length) {
-      recentTabs[0].selected = true;
+      recentTabs[0].switchSelected = true;
       selectedTabId = recentTabs[0].id;
       selectedIsRecent = true;
     }
@@ -89,7 +89,7 @@ function renderTabList(tabs, containerSelector, eventLabel, options) {
       li.classList.add("tab__active");
       renderedInfo += "ACTIVE\n";
     }
-    if (tab.selected) {
+    if (tab.switchSelected) {
       newSelectedTabElement = li;
       li.classList.add("tab__selected");
       renderedInfo += "SELECTED\n";
