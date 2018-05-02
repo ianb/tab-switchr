@@ -158,12 +158,16 @@ element(".feedback-button").addEventListener("click", () => {
   });*/
 });
 
-element("#tab-switchr-search").addEventListener("keyup", (event) => {
+element("#tab-switchr-search").addEventListener("keydown", (event) => {
   if (event.code === "Enter") {
     if (selectedTabId) {
       focusTab(selectedTabId);
       window.close();
     }
+  } else if (event.code === "KeyX" && event.altKey) {
+    let closeTabId = selectedTabId;
+    movePosition(1);
+    closeTab(closeTabId);
   } else if (event.code === "ArrowUp") {
     movePosition(-1);
   } else if (event.code === "ArrowDown") {
